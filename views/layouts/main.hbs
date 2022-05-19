@@ -1,0 +1,57 @@
+<head>
+  <link rel="shortcut icon" href="#">
+</head>
+
+<script>   
+function empezar(e) {   
+  window.location.href = '/empezar';
+}   
+function pausar(e) {   
+  window.location.href = '/pausar';
+}  
+function continuar(e) {   
+  window.location.href = '/continuar';
+}  
+function terminar(e) {   
+  window.location.href = '/terminar';
+}  
+</script> 
+
+{{> header}}
+
+{{#if trabajando}}
+    <h1 style="color: rgb(11, 11, 213);">Trabajando </h1> 
+{{else}}
+    <h1 style="color: rgb(179, 213, 11);">En pausa</h1> 
+{{/if}}
+
+<h2> trabajado sesion: {{totalTiempo}} segundos</h2>
+
+  {{!-- <h2>trabajado: {{ ahora }} HH:MM:SS</h2> --}}
+
+  <button {{#unless empezable}} disabled {{/unless}} onclick="empezar()">
+  Empezar
+  </button>
+
+  {{#if trabajando}}
+
+  <button {{#unless empezado}} disabled {{/unless}} onclick="pausar()">
+  Pausar
+  </button>
+
+{{else}}
+
+  <button {{#unless empezado}} disabled {{/unless}} onclick="continuar()">
+  Continuar
+  </button>
+
+{{/if}}
+
+  <button {{#unless terminable}} disabled {{/unless}} onclick="terminar()">
+  Terminar
+  </button>
+
+<h3> total acumulado : {{valueHistorico}} segundos</h3>
+
+
+{{!-- {{> footer}} --}}

@@ -145,7 +145,7 @@ app.get("/terminar", async (req, res) => {
   empezable = false;
 
   await client.set(key, totalTiempo);
-  if (typeof totalTiempo === "number") {
+  if (Number.isInteger(totalTiempo)) {
     await client.set(keyHistorico, (valueHistorico + totalTiempo).toString());
   }
   valueHistorico = await client.get(keyHistorico);

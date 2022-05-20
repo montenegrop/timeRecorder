@@ -33,26 +33,25 @@ var empezable = false;
 var inicialMoment = null;
 var totalTiempo = 0;
 var diferenciaTiempo = 0;
-var totalHistorico = 0;
 
-const port = process.env.PORT || 80;
+const port = process.env.PORT || 8086;
+const keyBase = "casinoSecs";
 
 // redis:
 await client.connect();
-
 var key = "noEmpezado";
 var value = "iniciadoNoTerminado";
-const keyHistorico = "casSecsT";
-var valueHistorico = (await client.get(keyHistorico)) || 0;
-
-// await client.set('key2', 'value3')
-// const value = await client.get('hello')
+const keyHistorico = keyBase + "T:";
+var valueHistorico = Number(await client.get(keyHistorico)) || 0;
+// redis get all keys:
+// const keys = await client.sendCommand(["keys", "*"]);
+// console.log(keys);
 
 app.get("/iniciable/casino", async (req, res) => {
   empezable = true;
   trabajando = false;
 
-  valueHistorico = (await client.get(keyHistorico)) || 0;
+  valueHistorico = Number(await client.get(keyHistorico)) || 0;
 
   const data = {
     trabajando,
@@ -74,16 +73,16 @@ app.get("/empezar", async (req, res) => {
   diferenciaTiempo = 0;
   totalTiempo = 0;
   inicialMoment = moment();
-  key = "casSecsT:" + inicialMoment.format("DD_MM_YYYY");
+  key = keyBase + ":" + inicialMoment.format("DD_MM_YYYY");
 
   let i = 0;
   let exists = true;
   while (exists) {
+    i = i + 1;
     let try_key = await client.get(key + "-" + i.toString());
     if (try_key == null) {
       exists = false;
     }
-    i = i + 1;
   }
   key = key + "-" + i.toString();
 
@@ -108,8 +107,6 @@ app.get("/pausar", (req, res) => {
 
   diferenciaTiempo = moment().diff(inicialMoment, "seconds");
   totalTiempo = totalTiempo + diferenciaTiempo;
-
-  // var ahora = moment().format('DD MM YYYY hh:mm:ss')
 
   const data = {
     trabajando,
@@ -148,10 +145,8 @@ app.get("/terminar", async (req, res) => {
   empezable = false;
 
   await client.set(key, totalTiempo);
-  await client.set(
-    keyHistorico,
-    (Number(valueHistorico) + Number(totalTiempo)).toString()
-  );
+  await client.set(keyHistorico, (valueHistorico + totalTiempo).toString());
+  valueHistorico = await client.get(keyHistorico);
 
   const data = {
     trabajando,

@@ -71,7 +71,7 @@ app.get("/empezar", async (req, res) => {
   empezable = false;
 
   diferenciaTiempo = 0;
-  totalTiempo = 24532;
+  totalTiempo = 0;
   inicialMoment = moment();
   key = keyBase + ":" + inicialMoment.format("DD_MM_YYYY");
 

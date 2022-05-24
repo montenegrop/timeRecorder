@@ -1,5 +1,5 @@
 import "dotenv/config";
-import express from "express";
+import express, { Router } from "express";
 const app = express();
 
 import { engine } from "express-handlebars";
@@ -21,6 +21,9 @@ const engienFn = engine({
 app.engine("hbs", engienFn);
 app.set("views", "./views");
 app.set("view engine", "hbs");
+
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
 // dotenv:
 
@@ -46,6 +49,21 @@ var valueHistorico = Number(await client.get(keyHistorico)) || 0;
 // redis get all keys:
 // const keys = await client.sendCommand(["keys", "*"]);
 // console.log(keys);
+
+const personasRouter = Router();
+personasRouter.post("", (req, res) => {
+  const persona = req.body;
+  console.log("persona", persona);
+
+  return res.status(201).json(persona);
+});
+app.use("/personas", personasRouter);
+
+app.post("/iniciable/casino", async (req, res) => {
+  console.log("body", req.body);
+  console.log(req.headers);
+  res.redirect("/iniciable/casino");
+});
 
 app.get("/iniciable/casino", async (req, res) => {
   empezable = true;

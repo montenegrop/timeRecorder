@@ -15,7 +15,11 @@ function continuar(e) {
 function terminar(e) {   
   window.location.href = '/terminar';
 }  
+
+
+
 </script> 
+
 
 {{> header}}
 
@@ -27,8 +31,10 @@ function terminar(e) {
 
 <h2> trabajado sesion: {{totalTiempo}} segundos</h2>
 
-  {{!-- <h2>trabajado: {{ ahora }} HH:MM:SS</h2> --}}
 
+
+  {{!-- <h2>trabajado: {{ ahora }} HH:MM:SS</h2> --}}
+<div>
   <button {{#unless empezable}} disabled {{/unless}} onclick="empezar()">
   Empezar
   </button>
@@ -52,6 +58,64 @@ function terminar(e) {
   </button>
 
 <h3> total acumulado : {{valueHistorico}} segundos</h3>
+</div>
 
+
+<div>
+  <h3>contador en vivo para control</h3>
+<div id='seconds-counter'> </div>
+<button id='seconds-pauser' onclick="pausar_contador()">pausar contador en vivo</button>
+<button id='seconds-continuar' onclick="seguir_contador()">seguir contador en vivo</button>
+</div>
+
+<div>
+  <form action="/iniciable/casino" method="POST">
+    <h3>correcciones si funciona mal el server</h3>
+    <label for="historic">secs totales:</label>
+    <input type="text" name="historic"><br><br>
+    <input type="submit" value="Submit">
+  </form>
+</div>
+
+
+<form action="/personas" method="POST">
+    <div>
+      <label for="nombre">Nombre: </label><input name="nombre">
+    </div>
+    <div>
+      <label for="apellido">Apellido: </label><input name="apellido">
+    </div>
+    <div>
+      <label for="edad">Edad: </label><input name="edad">
+    </div>
+    <div>
+      <input type="submit">
+    </div>
+  </form>
 
 {{!-- {{> footer}} --}}
+
+<script>
+
+var seconds = 0;
+var el = document.getElementById('seconds-counter');
+
+function incrementSeconds() {
+    seconds += 1;
+    el.innerText = "You have been here for " + seconds + " seconds.";
+}
+
+
+var cancel = ""
+
+
+function seguir_contador() {
+  cancel = setInterval(incrementSeconds, 1000);
+}
+
+function pausar_contador() {
+  clearInterval(cancel)
+}
+
+
+</script>

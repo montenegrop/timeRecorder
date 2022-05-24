@@ -60,8 +60,7 @@ personasRouter.post("", (req, res) => {
 app.use("/personas", personasRouter);
 
 app.post("/iniciable/casino", async (req, res) => {
-  console.log("body", req.body);
-  console.log(req.headers);
+  await client.set(keyHistorico, req.body.historic);
   res.redirect("/iniciable/casino");
 });
 
